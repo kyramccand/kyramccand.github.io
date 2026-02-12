@@ -1,0 +1,194 @@
+<html>
+    <head>
+        <title>
+            Joe's Hotdogs
+        </title>
+        <style>
+            h1, h2 {
+                text-align: center;
+            }
+            div.item {
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                align-items: center;
+            }
+            div.page-container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 50px;
+                width: 100%;
+            }
+            div.menu {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 60%;
+            }
+            div.your-order {
+                width: 60%;
+            }
+            div.orders {
+                display: flex;
+                flex-direction: row;
+                gap: 50px;
+                width: 100%;
+                justify-content: space-evenly;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Joe's Hotdogs</h1>
+        <div class="page-container">
+            <div class="your-order">
+                <h2>Your Items</h2>
+                <div class="orders">
+                    <div>
+                        <h3>Hot Dog</h3>
+                        <ul>
+                            <li><strong>Quantity: <span id="numDogs"></span></strong></li>
+                            <li><strong>Cost:</strong> <span id="dogCost"></span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>French Fry</h3>
+                        <ul>
+                            <li><strong>Quantity: <span id="numFries"></span></strong></li>
+                            <li><strong>Cost:</strong> <span id="fryCost"></span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Drink</h3>
+                        <ul>
+                            <li><strong>Quantity: <span id="numSodas"></span></strong></li>
+                            <li><strong>Cost:</strong> <span id="sodaCost"></span></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Joe's Meal Deal</h3>
+                        <ul>
+                            <li><strong>Quantity: <span id="numMealDeals"></span></strong></li>
+                            <li><strong>Cost:</strong> <span id="dealCost"></span></li>
+                        </ul>
+                    </div>
+                </div> <!-- End of individaul item orders -->
+            </div> <!-- End of Your Order -->
+            <div class="menu">
+                <h2>Order Summary</h2>
+                <div class="item">
+                    <h3>Subtotal before discount</h3>
+                    <span id="before-discount"></span>
+                </div>
+                <div class="item">
+                    <h3>Discounts</h3>
+                    <span id="discount"></span>
+                </div>
+                <div class="item">
+                    <h3>Subtotal after discount</h3>
+                    <span id="after-discount"></span>
+                </div>
+                <div class="item">
+                    <h3>Tax</h3>
+                    <span id="tax"></span>
+                </div>
+                <div class="item">
+                    <h3>Final Total</h3>
+                    <span id="final-total"></span>
+                </div>
+            </div> <!-- End of order summary -->
+        </div>
+    </body>
+    <script> 
+        // Constants to store prices
+        const DOG_PRICE = 5.25
+        const FRY_PRICE = 3.75
+        const SODA_PRICE = 2.50
+        
+        // Alert the menu
+        alert("=======================\n"+
+        "                    MENU\n"+
+        "=======================\n\n" +
+        "10% off orders at least $30!\n" +
+        "Meal Deal: Hot Dog, Fry, Drink\n\n" +
+        "Hot Dog..........................$5.25\n" + 
+        "French Fry......................$3.75\n" +
+        "Drink...............................$2.50\n" +
+        "Meal Deal......................$10.00")
+
+        // Prompt for order
+        numDogs = prompt("How many hotdogs do you want?: ")
+        numFries = prompt("How many fries do you want?: ")
+        numSodas = prompt("How many drinks do you want?: ")
+        
+        // Calculate the number of meal deals and update variables
+        numMealDeals = 0
+        while (numDogs > 0 && numFries > 0 && numSodas > 0) {
+            numMealDeals++
+            numDogs--
+            numFries--
+            numSodas--
+        }
+
+        // Display quantities
+        document.getElementById("numDogs").innerText = numDogs
+        document.getElementById("numFries").innerText = numFries
+        document.getElementById("numSodas").innerText = numSodas
+        document.getElementById("numMealDeals").innerText = numMealDeals
+
+        // Display costs
+        displayMoney(showMoney(numDogs * DOG_PRICE), "dogCost")
+        displayMoney(showMoney(numFries * FRY_PRICE), "fryCost")
+        displayMoney(showMoney(numSodas * SODA_PRICE), "sodaCost")
+        displayMoney(showMoney(numMealDeals * 10), "dealCost")
+
+
+        // Calculate and disply subtotal
+        subtotal = numDogs * DOG_PRICE + 
+                    numFries * FRY_PRICE + 
+                    numSodas * SODA_PRICE +
+                    numMealDeals * 10
+
+        displayMoney(showMoney(subtotal), "before-discount")
+
+        discount = 0
+        // Apply discount if needed and dislay
+        if (subtotal >= 30) {
+            discount = subtotal * 0.1
+            subtotal -= discount
+        }
+        
+        displayMoney(showMoney(discount), "discount")
+        displayMoney(showMoney(subtotal), "after-discount")
+
+        // Add tax and display
+        tax = 0.0625 * subtotal
+        subtotal += tax
+
+        displayMoney(showMoney(tax), "tax")
+        displayMoney(showMoney(subtotal), "final-total")
+
+
+
+        // FUNCTIONS
+
+        // Converts float money into properly formatted string
+        function showMoney(money) {
+            dollars = Math.floor(money) // Extract dollars
+            money -= dollars
+            cents = Math.round(money * 100) // Extract cents
+            moneyString = dollars + "." + cents
+            if (cents < 10) { // Handle single digit cents
+                moneyString = moneyString + "0"
+            }
+            return moneyString
+        }
+
+        // Displays money at the element with the given id
+        function displayMoney(money, id) {
+            document.getElementById(id).innerText = "$" + money
+        }
+    </script>
+</html>
